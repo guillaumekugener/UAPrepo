@@ -60,7 +60,6 @@ function _CreateTheSimulation() {
 	* Decide where to place these surfaces at the beginning of the experiment, right now, independent
 	* of the forces that will later be applied on them, which will take effect once the mass is clicked on
 	*/
-
 	var windowWidth = window.innerWidth;
 
 	var leftMajorWallModifier = new StateModifier({
