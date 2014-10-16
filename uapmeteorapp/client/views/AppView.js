@@ -7,6 +7,7 @@ AppView = function () {
     View.apply(this, arguments);
 
     _addSimulationView.call(this);
+    _addSettingsView.call(this);
 }
 
 function _addSimulationView() {
@@ -18,6 +19,17 @@ function _addSimulationView() {
 	});
 
 	this.add(simulationModifier).add(simulationView);
+}
+
+function _addSettingsView() {
+	var settingsView = new SettingsView();
+
+	var settingsModifier = new StateModifier({
+		align: [1, 0],
+		origin: [1, 0]
+	});
+
+	this.add(settingsModifier).add(settingsView);
 }
 
 AppView.prototype = Object.create(View.prototype);

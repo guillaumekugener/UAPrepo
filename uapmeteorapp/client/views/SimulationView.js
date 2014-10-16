@@ -56,6 +56,8 @@ function _CreateTheSimulation() {
 	    }
 	});
 
+	var springView = new SpringView();
+
 	/*
 	* Decide where to place these surfaces at the beginning of the experiment, right now, independent
 	* of the forces that will later be applied on them, which will take effect once the mass is clicked on
@@ -70,6 +72,7 @@ function _CreateTheSimulation() {
 	var movingSpringModifier = new Modifier({
 	    align: [wallWidth/windowWidth, 0.5],
 	    origin: [0, 0.5],
+	    transform: Transform.translate(wallWidth, window.innerHeight/2, -1)
 	});
 
 	var massModifier = new Modifier({
@@ -78,7 +81,7 @@ function _CreateTheSimulation() {
 	});
 
 	this.add(leftMajorWallModifier).add(leftMajorWallSurface);
-	this.add(movingSpringModifier).add(movingSpringSurface);
+	this.add(movingSpringModifier).add(springView);
 	this.add(massModifier).add(massSurface);
 
 	/*
@@ -86,17 +89,16 @@ function _CreateTheSimulation() {
 	* now has a paricle property attached to it
 	*/
 
-	var massSurfaceClicked = false;
 	var massPositionArray = [];
 
 	massSurface.particle = new Rectangle({
 	    size: [blockSideLength, blockSideLength]
 	});
 
-	movingSpringSurface.particle = new Particle({});
+	//movingSpringSurface.particle = new Particle({});
 
 	physicsEngine.addBody(massSurface.particle);
-	physicsEngine.addBody(movingSpringSurface.particle);
+	//physicsEngine.addBody(movingSpringSurface.particle);
 
 	/* 
 	* Create the spring force that will be applied on the rectangular particle
@@ -104,15 +106,16 @@ function _CreateTheSimulation() {
 	* Note: set the anchor to spring's resting length so it does not move on start
 	*/
 
-	var springForce = new Spring({
-	    anchor: new Vector(springRestLength, 0, 0),
-	    period: 3000,
-	    dampingRatio: 0.1,
-	    length: springRestLength
-	});
+	// var springForce = new Spring({
+	//     anchor: new Vector(springRestLength, 0, 0),
+	//     period: 3000,
+	//     dampingRatio: 0.1,
+	//     length: springRestLength
+	// });
+
 
 	//The force is now attached to the spring
-	physicsEngine.attach(springForce, [massSurface.particle]);
+	physicsEngine.attach(springView.springForce, [massSurface.particle]);
 
 	massSurface.on('click', function() {
 	    massSurface.particle.setVelocity([-0.2, 0, 0]);
@@ -129,9 +132,9 @@ function _CreateTheSimulation() {
 	* Now get the spring surface to extend and contract in relation to the position of the massSurface
 	* particle using a transitionable
 	*/
-	movingSpringModifier.sizeFrom(changeSpringLength);
+	springView.movingSpringModifier.sizeFrom(changeSpringLength);
 	function changeSpringLength() {
-	    return [massSurface.particle.getPosition()[0] + springRestLength + 2, 20];
+	    return [massSurface.particle.getPosition()[0] + springView.options.springRestLength + 2, 20];
 	}
 }
 
