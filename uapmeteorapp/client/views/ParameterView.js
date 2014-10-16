@@ -1,3 +1,12 @@
+/*
+* ParameterView.js
+*
+* This module creates the basic parameter control widget. The variables in the simulation
+* will be changed using this widget. Multiple ParameterViews are added to the SettingsView
+* where a slider widget allows users to change the value. I will also implement an editable
+* value textbox so that users can manually input the values that they want to simulate.
+*/
+
 var View          = require('famous/core/View');
 var Surface       = require('famous/core/Surface');
 var Transform     = require('famous/core/Transform');
@@ -15,6 +24,7 @@ ParameterView = function () {
     _addControllerEventListeners.call(this);
 }
 
+//Create the two labels (which variable and its value) for the slider widget.
 function _createParameterLabels() {
 	var labelSurface = new Surface({
 		size: [100, 30],
@@ -45,6 +55,7 @@ function _createParameterLabels() {
 	this.add(parameterValueModifier).add(parameterValueSurface);
 }
 
+// Create the back of the slider
 function _createRangeSurface() {
 	var rangeSurface = new Surface({
 		size: [300, 10],
@@ -60,6 +71,9 @@ function _createRangeSurface() {
 	this.add(rangeModifier).add(rangeSurface);
 }
 
+// Create the controller that users will actually be able to drag around. Confine it to the range
+// of the surface right below it (right now they are not linked, should look into linking the two
+// surfaces together potentially)
 function _createSlidingCircleController() {
 	this.controllerSurface = new Surface({
 		size: [15, 15],
@@ -87,6 +101,10 @@ function _createSlidingCircleController() {
 	this.add(controllerModifier).add(this.circleDraggable).add(this.controllerSurface);
 }
 
+/*
+* Function to add the even listeners on the widget. This is how the value text gets changed
+* as the controller is being dragged. Several event listeners will come out of this
+*/
 function _addControllerEventListeners() {
 	this.circleDraggable.on('end', function() {
 		console.log(this.circleDraggable.getPosition());
