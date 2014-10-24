@@ -8,6 +8,7 @@ AppView = function () {
 
     _addSimulationView.call(this);
     _addSettingsView.call(this);
+    _addGraphView.call(this);
     _setListener.call(this);
 }
 
@@ -31,6 +32,17 @@ function _addSettingsView() {
 	});
 
 	this.add(settingsModifier).add(this.settingsView);
+}
+
+function _addGraphView() {
+	this.graphView = new GraphView();
+
+	var graphViewModifier = new StateModifier({
+		align: [1, 1],
+		origin: [1, 1]
+	});
+
+	this.add(graphViewModifier).add(this.graphView);
 }
 
 function _setSettingsViewListener(parameter, self) {
