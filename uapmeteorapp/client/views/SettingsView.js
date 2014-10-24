@@ -17,6 +17,7 @@ SettingsView = function () {
 
     this.settings = [];
     this.settingsName = [];
+    this.settingsObject = {};
 
     _addSomeParamters.call(this);
 }
@@ -24,10 +25,12 @@ SettingsView = function () {
 //Function to add some ParametViews right now used for testing. Later, it will be replaced by 
 //SettingsView.addParameter (see belw)
 function _addSomeParamters() {
-	var parameters = ['Mass', 'Period', 'Damping Ratio'];
+	var parameters = ['mass', 'period', 'dampingRatio'];
+
+	var parametersMinsMaxes = [{min: 5, max: 50}, {min: 500, max: 3000}, {min: 0, max: 1}];
 
 	for (var i=0; i < parameters.length; i++) {
-		var parameter = new ParameterView(parameters[i]);
+		var parameter = new ParameterView(parameters[i], parametersMinsMaxes[i]['min'], parametersMinsMaxes[i]['max']);
 
 		var parameterModifier = new StateModifier({
 			transform: Transform.translate(-20, i*50, 0)
@@ -35,6 +38,8 @@ function _addSomeParamters() {
 
 		this.settingsName.push(parameters[i]);
 		this.settings.push(parameter);
+
+		this.addParameter(parameters[i], parameter);
 
 		this.add(parameterModifier).add(parameter);
 
@@ -57,12 +62,8 @@ SettingsView.prototype.constructor = SettingsView;
 
 SettingsView.DEFAULT_OPTIONS = {};
 
-// Function that will enable users to add parameters to the SettingsView. Not entieraly sure when 
-// this funciton will start being used as of now
-SettingsView.prototype.addParameter = function(paramter) {
-	this.add(paramter);
-
-	this.settings.push(paramter);
+SettingsView.prototype.addParameter = function(parameterName, parameterObject) {
+	this.settingsObject[parameterName] = parameterObject;
 }
 
 SettingsView.prototype.getSettings = function() {

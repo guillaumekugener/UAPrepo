@@ -12,14 +12,14 @@ AppView = function () {
 }
 
 function _addSimulationView() {
-	var simulationView = new SimulationView();
+	this.simulationView = new SimulationView();
 
 	var simulationModifier = new StateModifier({
 		align: [0,0],
 		origin: [0,0]
 	});
 
-	this.add(simulationModifier).add(simulationView);
+	this.add(simulationModifier).add(this.simulationView);
 }
 
 function _addSettingsView() {
@@ -35,7 +35,7 @@ function _addSettingsView() {
 
 function _setSettingsViewListener(parameter, self) {
 	self.settingsView.on('settingsChange' + parameter.parameter, function() {
-		console.log('appView heard ' + parameter.parameter);
+		self.changeSetting(parameter);
 	});
 }
 
@@ -54,5 +54,12 @@ AppView.prototype.constructor = AppView;
 AppView.prototype.getSettingsView = function() {
 	return this.settingsView;
 }
+
+AppView.prototype.changeSetting = function(settingToChangeObject) {
+	var options = this.simulationView.springView.options;
+	options[settingToChangeObject.parameter] = settingToChangeObject.paramValue;
+	this.simulationView.springView.changeOptions(options);
+}
+
 
 AppView.DEFAULT_OPTIONS = {};

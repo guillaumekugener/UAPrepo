@@ -14,10 +14,14 @@ var StateModifier = require('famous/modifiers/StateModifier');
 
 var Draggable     = require('famous/modifiers/Draggable');
 
-ParameterView = function (parameter) {
+ParameterView = function (parameter, minValue, maxValue) {
     View.apply(this, arguments);
 
     this.parameter = parameter;
+    this.minValue = minValue;
+    this.maxValue = maxValue;
+
+    this.valueRatio = (maxValue - minValue) / 300;
 
     _createParameterLabels.call(this);
     _createRangeSurface.call(this);
@@ -43,9 +47,11 @@ function _createParameterLabels() {
 
 	this.add(labelModifier).add(labelSurface);
 
+	var initialValue = (this.minValue + this.maxValue) * 1.0 / 2;
+
 	this.parameterValueSurface = new Surface({
 		size: [50, 30],
-		content: 'value',
+		content: initialValue,
 		properties: {
 			textAlign: 'center'
 		}
@@ -110,7 +116,7 @@ function _createSlidingCircleController() {
 */
 function _addControllerEventListeners() {
 	this.circleDraggable.on('end', function() {
-		this.paramValue = this.circleDraggable.getPosition()[0] + 150;
+		this.paramValue = ((this.circleDraggable.getPosition()[0] + 150) * 1.0) * this.valueRatio + this.minValue;
 		this.parameterValueSurface.setContent(this.paramValue);
 		this._eventOutput.emit('change' + this.parameter);
 	}.bind(this));
@@ -118,5 +124,9 @@ function _addControllerEventListeners() {
 
 ParameterView.prototype = Object.create(View.prototype);
 ParameterView.prototype.constructor = ParameterView;
+
+ParameterView.prototype.getCurrentValue = function() {
+	return this.paramValue;
+}
 
 ParameterView.DEFAULT_OPTIONS = {};

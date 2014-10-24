@@ -56,7 +56,9 @@ function _createSpringForce() {
 SpringView.prototype = Object.create(View.prototype);
 SpringView.prototype.constructor = SpringView;
 
-
+SpringView.prototype.changeOptions = function(newOptions) {
+	this.springForce.setOptions(newOptions);
+}
 
 SpringView.DEFAULT_OPTIONS = {
 	springRestLength: 100,
