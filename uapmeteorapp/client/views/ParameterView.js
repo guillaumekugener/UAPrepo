@@ -14,8 +14,10 @@ var StateModifier = require('famous/modifiers/StateModifier');
 
 var Draggable     = require('famous/modifiers/Draggable');
 
-ParameterView = function () {
+ParameterView = function (parameter) {
     View.apply(this, arguments);
+
+    this.parameter = parameter;
 
     _createParameterLabels.call(this);
     _createRangeSurface.call(this);
@@ -26,9 +28,10 @@ ParameterView = function () {
 
 //Create the two labels (which variable and its value) for the slider widget.
 function _createParameterLabels() {
+
 	var labelSurface = new Surface({
 		size: [100, 30],
-		content: 'Mass',
+		content: this.parameter,
 		properties: {
 			textAlign: 'center'
 		}
@@ -40,7 +43,7 @@ function _createParameterLabels() {
 
 	this.add(labelModifier).add(labelSurface);
 
-	var parameterValueSurface = new Surface({
+	this.parameterValueSurface = new Surface({
 		size: [50, 30],
 		content: 'value',
 		properties: {
@@ -52,7 +55,7 @@ function _createParameterLabels() {
 		transform: Transform.translate(20, 0, 0)
 	});
 
-	this.add(parameterValueModifier).add(parameterValueSurface);
+	this.add(parameterValueModifier).add(this.parameterValueSurface);
 }
 
 // Create the back of the slider
@@ -107,7 +110,9 @@ function _createSlidingCircleController() {
 */
 function _addControllerEventListeners() {
 	this.circleDraggable.on('end', function() {
-		console.log(this.circleDraggable.getPosition());
+		this.paramValue = this.circleDraggable.getPosition()[0] + 150;
+		this.parameterValueSurface.setContent(this.paramValue);
+		this._eventOutput.emit('change' + this.parameter);
 	}.bind(this));
 }
 

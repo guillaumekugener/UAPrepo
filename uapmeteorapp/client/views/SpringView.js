@@ -40,7 +40,7 @@ function _createSpringSurface() {
 
 //Create the actual spring force from the options passed into the SpringView constructor.
 //Right now, it is just using the default options but later on it will use the arguments
-// loctaed in the constructor when a SpringView is initialized.
+// located in the constructor when a SpringView is initialized.
 function _createSpringForce() {
 	var springForce = new Spring({
 		anchor: new Vector(this.options.springRestLength, 0, 0),
@@ -55,6 +55,8 @@ function _createSpringForce() {
 
 SpringView.prototype = Object.create(View.prototype);
 SpringView.prototype.constructor = SpringView;
+
+
 
 SpringView.DEFAULT_OPTIONS = {
 	springRestLength: 100,

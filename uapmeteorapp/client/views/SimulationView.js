@@ -138,6 +138,7 @@ function _CreateTheSimulation() {
 	}
 }
 
+
 SimulationView.prototype = Object.create(View.prototype);
 SimulationView.prototype.constructor = SimulationView;
 

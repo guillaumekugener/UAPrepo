@@ -8,6 +8,7 @@ AppView = function () {
 
     _addSimulationView.call(this);
     _addSettingsView.call(this);
+    _setListener.call(this);
 }
 
 function _addSimulationView() {
@@ -22,17 +23,36 @@ function _addSimulationView() {
 }
 
 function _addSettingsView() {
-	var settingsView = new SettingsView();
+	this.settingsView = new SettingsView();
 
 	var settingsModifier = new StateModifier({
 		align: [1, 0],
 		origin: [1, 0]
 	});
 
-	this.add(settingsModifier).add(settingsView);
+	this.add(settingsModifier).add(this.settingsView);
+}
+
+function _setSettingsViewListener(parameter, self) {
+	self.settingsView.on('settingsChange' + parameter.parameter, function() {
+		console.log('appView heard ' + parameter.parameter);
+	});
+}
+
+function _setListener() {
+	var settingsValues = this.settingsView.getSettings();
+
+	for (var i = 0; i < settingsValues.length; i++) {
+		_setSettingsViewListener(settingsValues[i], this);
+	}
+
 }
 
 AppView.prototype = Object.create(View.prototype);
 AppView.prototype.constructor = AppView;
+
+AppView.prototype.getSettingsView = function() {
+	return this.settingsView;
+}
 
 AppView.DEFAULT_OPTIONS = {};

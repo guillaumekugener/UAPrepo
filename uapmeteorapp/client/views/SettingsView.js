@@ -16,6 +16,7 @@ SettingsView = function () {
     View.apply(this, arguments);
 
     this.settings = [];
+    this.settingsName = [];
 
     _addSomeParamters.call(this);
 }
@@ -23,16 +24,33 @@ SettingsView = function () {
 //Function to add some ParametViews right now used for testing. Later, it will be replaced by 
 //SettingsView.addParameter (see belw)
 function _addSomeParamters() {
-	for (var i=0; i < 3; i ++) {
-		var paramter = new ParameterView();
+	var parameters = ['Mass', 'Period', 'Damping Ratio'];
+
+	for (var i=0; i < parameters.length; i++) {
+		var parameter = new ParameterView(parameters[i]);
 
 		var parameterModifier = new StateModifier({
-			transform: Transform.translate(-20, 200 + i*50, 0)
+			transform: Transform.translate(-20, i*50, 0)
 		});
 
-		this.add(parameterModifier).add(paramter);
+		this.settingsName.push(parameters[i]);
+		this.settings.push(parameter);
+
+		this.add(parameterModifier).add(parameter);
+
+		setParameterViewListener(parameter, this);
+
 	}
 }
+
+//Function that adds the eventListener to the parameter view objects
+//Is passed the parameterViewObject as well as self (which is the current SettingsView instance)
+function setParameterViewListener(parameterViewObject, self) {
+	parameterViewObject.on('change' + parameterViewObject.parameter, function() {
+		self._eventOutput.emit('settingsChange' + parameterViewObject.parameter);
+	});
+}
+
 
 SettingsView.prototype = Object.create(View.prototype);
 SettingsView.prototype.constructor = SettingsView;
@@ -45,5 +63,9 @@ SettingsView.prototype.addParameter = function(paramter) {
 	this.add(paramter);
 
 	this.settings.push(paramter);
+}
+
+SettingsView.prototype.getSettings = function() {
+	return this.settings;
 }
 
