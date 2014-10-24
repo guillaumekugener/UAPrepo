@@ -95,23 +95,7 @@ function _CreateTheSimulation() {
 	    size: [blockSideLength, blockSideLength]
 	});
 
-	//movingSpringSurface.particle = new Particle({});
-
 	physicsEngine.addBody(massSurface.particle);
-	//physicsEngine.addBody(movingSpringSurface.particle);
-
-	/* 
-	* Create the spring force that will be applied on the rectangular particle
-	*
-	* Note: set the anchor to spring's resting length so it does not move on start
-	*/
-
-	// var springForce = new Spring({
-	//     anchor: new Vector(springRestLength, 0, 0),
-	//     period: 3000,
-	//     dampingRatio: 0.1,
-	//     length: springRestLength
-	// });
 
 
 	//The force is now attached to the spring
@@ -121,12 +105,13 @@ function _CreateTheSimulation() {
 	    massSurface.particle.setVelocity([-0.2, 0, 0]);
 	}.bind(this));
 
-	var massPositionOverTime = [];
+	this.massPositionOverTime = [];
+
 	// Required to get the surface to move. Also, push the mass' poisiton into an array for graphing later
-	Engine.on('prerender', function(){
+	Engine.on('prerender', function() {
 	    massModifier.setTransform(massSurface.particle.getTransform());
-	    massPositionOverTime.push(massSurface.particle.getPosition());
-	});
+	    this.massPositionOverTime.push(massSurface.particle.getPosition()[0]);
+	}.bind(this));
 
 	/*
 	* Now get the spring surface to extend and contract in relation to the position of the massSurface
@@ -136,9 +121,30 @@ function _CreateTheSimulation() {
 	function changeSpringLength() {
 	    return [massSurface.particle.getPosition()[0] + springView.options.springRestLength + 2, 20];
 	}
+
+	this.setSpringView(springView);
+	this.setMassSurface(massSurface);
 }
+
 
 SimulationView.prototype = Object.create(View.prototype);
 SimulationView.prototype.constructor = SimulationView;
+
+SimulationView.prototype.setSpringView = function(springViewObject) { 
+	this.springView = springViewObject;
+}
+
+SimulationView.prototype.setMassSurface = function(massSurfaceObject) {
+	this.massSurface = massSurfaceObject;
+}
+
+SimulationView.prototype.getMassPositionOverTime = function() {
+	return this.massPositionOverTime;
+}
+
+SimulationView.prototype.resetPositionArray = function() {
+	this.massPositionOverTime = [];
+}
+
 
 SimulationView.DEFAULT_OPTIONS = {};
