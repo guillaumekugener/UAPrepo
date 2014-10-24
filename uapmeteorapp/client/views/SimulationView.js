@@ -105,12 +105,13 @@ function _CreateTheSimulation() {
 	    massSurface.particle.setVelocity([-0.2, 0, 0]);
 	}.bind(this));
 
-	var massPositionOverTime = [];
+	this.massPositionOverTime = [];
+
 	// Required to get the surface to move. Also, push the mass' poisiton into an array for graphing later
-	Engine.on('prerender', function(){
+	Engine.on('prerender', function() {
 	    massModifier.setTransform(massSurface.particle.getTransform());
-	    massPositionOverTime.push(massSurface.particle.getPosition());
-	});
+	    this.massPositionOverTime.push(massSurface.particle.getPosition()[0]);
+	}.bind(this));
 
 	/*
 	* Now get the spring surface to extend and contract in relation to the position of the massSurface
@@ -122,6 +123,7 @@ function _CreateTheSimulation() {
 	}
 
 	this.setSpringView(springView);
+	this.setMassSurface(massSurface);
 }
 
 
@@ -130,6 +132,18 @@ SimulationView.prototype.constructor = SimulationView;
 
 SimulationView.prototype.setSpringView = function(springViewObject) { 
 	this.springView = springViewObject;
+}
+
+SimulationView.prototype.setMassSurface = function(massSurfaceObject) {
+	this.massSurface = massSurfaceObject;
+}
+
+SimulationView.prototype.getMassPositionOverTime = function() {
+	return this.massPositionOverTime;
+}
+
+SimulationView.prototype.resetPositionArray = function() {
+	this.massPositionOverTime = [];
 }
 
 

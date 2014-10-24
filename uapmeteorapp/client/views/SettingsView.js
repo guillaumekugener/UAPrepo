@@ -20,6 +20,8 @@ SettingsView = function () {
     this.settingsObject = {};
 
     _addSomeParamters.call(this);
+    _addRunSimulationButton.call(this);
+    _setSimulationControlButtonListener.call(this);
 }
 
 //Function to add some ParametViews right now used for testing. Later, it will be replaced by 
@@ -33,6 +35,8 @@ function _addSomeParamters() {
 		var parameter = new ParameterView(parameters[i], parametersMinsMaxes[i]['min'], parametersMinsMaxes[i]['max']);
 
 		var parameterModifier = new StateModifier({
+			align: [1, 0],
+			origin: [1, 0],
 			transform: Transform.translate(-20, i*50, 0)
 		});
 
@@ -46,6 +50,42 @@ function _addSomeParamters() {
 		setParameterViewListener(parameter, this);
 
 	}
+}
+
+function _addRunSimulationButton() {
+	this.simulationControlSurface = new Surface({
+		size: [150, 20],
+		content: 'Run Simulation',
+		properties: {
+			backgroundColor: 'green',
+			textAlign: 'center'
+		}
+	});
+
+	var simulationControlModifier = new StateModifier({
+		align: [0.5, 1],
+		origin: [0.5, 1]
+	});
+
+	this.add(simulationControlModifier).add(this.simulationControlSurface);
+
+}
+
+function _setSimulationControlButtonListener() {
+	this.running = false;
+	this.simulationControlSurface.on('click', function() {
+		if (!this.running) {
+			this._eventOutput.emit('runSimulation');
+			this.simulationControlSurface.setContent('Stop Simulation');
+		}
+		else {
+			this._eventOutput.emit('stopSimulation');
+			this.simulationControlSurface.setContent('Run Simulation');
+		}
+
+		this.running = !this.running;
+
+	}.bind(this));
 }
 
 //Function that adds the eventListener to the parameter view objects

@@ -10,7 +10,7 @@ GraphView = function () {
 }
 
 function _createGraphBackground() {
-	var graphContainerSurface = new Surface({
+	this.graphContainerSurface = new Surface({
 		size: [800, 400],
 		properties: {
 			backgroundColor: 'orange'
@@ -19,17 +19,19 @@ function _createGraphBackground() {
 
 	var graphContainerModifier = new StateModifier({});
 
-	var templateContainer = document.createElement('div');
-
-	Blaze.render(Template.highChart, templateContainer);
-
-	graphContainerSurface.setContent(templateContainer);
-
-	this.add(graphContainerModifier).add(graphContainerSurface);
+	this.add(graphContainerModifier).add(this.graphContainerSurface);
 }
 
 
 GraphView.prototype = Object.create(View.prototype);
 GraphView.prototype.constructor = GraphView;
+
+GraphView.prototype.setPositionData = function(data) {
+	var templateContainer = document.createElement('div');
+
+	Blaze.renderWithData(Template.highChart, data, templateContainer);
+
+	this.graphContainerSurface.setContent(templateContainer);
+}
 
 GraphView.DEFAULT_OPTIONS = {};
