@@ -14,12 +14,13 @@ var StateModifier = require('famous/modifiers/StateModifier');
 
 var Draggable     = require('famous/modifiers/Draggable');
 
-ParameterView = function (parameter, minValue, maxValue) {
+ParameterView = function (parameter, minValue, maxValue, pLabel) {
     View.apply(this, arguments);
 
     this.parameter = parameter;
     this.minValue = minValue;
     this.maxValue = maxValue;
+    this.parameterLabel = pLabel;
 
     this.valueRatio = (maxValue - minValue) / 300;
 
@@ -34,15 +35,17 @@ ParameterView = function (parameter, minValue, maxValue) {
 function _createParameterLabels() {
 
 	var labelSurface = new Surface({
-		size: [100, 30],
-		content: this.parameter,
-		properties: {
-			textAlign: 'center'
-		}
+		size: [60, 20],
+		content: this.parameterLabel,
 	});
 
+	labelSurface.addClass("label");
+	labelSurface.addClass("label-info");
+
 	var labelModifier = new StateModifier({
-		transform: Transform.translate(-250, 0, 0)
+		align: [0, 0],
+		origin:[0, 0],
+		transform: Transform.translate(-170, 0, 0)
 	});
 
 	this.add(labelModifier).add(labelSurface);
@@ -50,15 +53,17 @@ function _createParameterLabels() {
 	var initialValue = (this.minValue + this.maxValue) * 1.0 / 2;
 
 	this.parameterValueSurface = new Surface({
-		size: [50, 30],
+		size: [50, 20],
 		content: initialValue,
-		properties: {
-			textAlign: 'center'
-		}
 	});
 
+	this.parameterValueSurface.addClass("label");
+	this.parameterValueSurface.addClass("label-default");
+
 	var parameterValueModifier = new StateModifier({
-		transform: Transform.translate(20, 0, 0)
+		align: [1,0],
+		origin: [1,0],
+		transform: Transform.translate(-130, 0, 0)
 	});
 
 	this.add(parameterValueModifier).add(this.parameterValueSurface);

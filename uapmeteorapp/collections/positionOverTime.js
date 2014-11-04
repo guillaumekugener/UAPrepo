@@ -1,0 +1,1 @@
+PositionOverTime = new Mongo.Collection('positionOverTime');

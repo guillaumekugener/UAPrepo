@@ -11,10 +11,7 @@ GraphView = function () {
 
 function _createGraphBackground() {
 	this.graphContainerSurface = new Surface({
-		size: [800, 400],
-		properties: {
-			backgroundColor: 'orange'
-		}
+		size: [800, 400]
 	});
 
 	var graphContainerModifier = new StateModifier({});
@@ -32,6 +29,10 @@ GraphView.prototype.setPositionData = function(data) {
 	Blaze.renderWithData(Template.highChart, data, templateContainer);
 
 	this.graphContainerSurface.setContent(templateContainer);
+
+	PositionOverTime.insert({
+		data: data
+	});
 }
 
 GraphView.DEFAULT_OPTIONS = {};

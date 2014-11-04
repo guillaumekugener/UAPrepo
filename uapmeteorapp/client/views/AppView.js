@@ -32,7 +32,8 @@ function _addSettingsView() {
 	var settingsModifier = new StateModifier({
 		align: [1, 0],
 		origin: [1, 0],
-		size: [300, 200]
+		size: [300, 200],
+		transform: Transform.translate(-50, 20, 0)
 	});
 
 	this.add(settingsModifier).add(this.settingsView);
@@ -44,7 +45,7 @@ function _addGraphView() {
 	var graphViewModifier = new StateModifier({
 		align: [1, 1],
 		origin: [1, 1],
-		size: [800, 400]
+		size: [800, 400],
 	});
 
 	this.add(graphViewModifier).add(this.graphView);
@@ -67,10 +68,13 @@ function _setListener() {
 
 function _setRunSimulationListener() {
 	this.settingsView.on('runSimulation', function() {
+		this.simulationView.resetPositionArray();
+		this.simulationView.run();
 		this.simulationView.massSurface.particle.setVelocity(-0.2, 0, 0);
 	}.bind(this));
 
 	this.settingsView.on('stopSimulation', function() {
+		this.simulationView.stopRunning();
 		this.simulationView.massSurface.particle.setVelocity(0, 0, 0);
 		this.simulationView.massSurface.particle.setPosition(0, 0, 0);
 

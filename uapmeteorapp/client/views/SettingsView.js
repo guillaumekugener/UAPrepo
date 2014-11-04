@@ -28,16 +28,17 @@ SettingsView = function () {
 //SettingsView.addParameter (see belw)
 function _addSomeParamters() {
 	var parameters = ['mass', 'period', 'dampingRatio'];
+	var parameterLabels = ['Mass', 'Period', 'Damping'];
 
 	var parametersMinsMaxes = [{min: 5, max: 50}, {min: 500, max: 3000}, {min: 0, max: 1}];
 
 	for (var i=0; i < parameters.length; i++) {
-		var parameter = new ParameterView(parameters[i], parametersMinsMaxes[i]['min'], parametersMinsMaxes[i]['max']);
+		var parameter = new ParameterView(parameters[i], parametersMinsMaxes[i]['min'], parametersMinsMaxes[i]['max'], parameterLabels[i]);
 
 		var parameterModifier = new StateModifier({
-			align: [1, 0],
-			origin: [1, 0],
-			transform: Transform.translate(-20, i*50, 0)
+			align: [0.5, 0],
+			origin: [0.5, 0],
+			transform: Transform.translate(150, i*50, 0)
 		});
 
 		this.settingsName.push(parameters[i]);
@@ -54,13 +55,12 @@ function _addSomeParamters() {
 
 function _addRunSimulationButton() {
 	this.simulationControlSurface = new Surface({
-		size: [150, 20],
+		size: [150, 40],
 		content: 'Run Simulation',
-		properties: {
-			backgroundColor: 'green',
-			textAlign: 'center'
-		}
 	});
+
+	this.simulationControlSurface.addClass("btn");
+	this.simulationControlSurface.addClass("btn-success");
 
 	var simulationControlModifier = new StateModifier({
 		align: [0.5, 1],
@@ -77,10 +77,14 @@ function _setSimulationControlButtonListener() {
 		if (!this.running) {
 			this._eventOutput.emit('runSimulation');
 			this.simulationControlSurface.setContent('Stop Simulation');
+			this.simulationControlSurface.addClass("btn-danger");
+			this.simulationControlSurface.removeClass("btn-success");
 		}
 		else {
 			this._eventOutput.emit('stopSimulation');
 			this.simulationControlSurface.setContent('Run Simulation');
+			this.simulationControlSurface.addClass("btn-success");
+			this.simulationControlSurface.removeClass("btn-danger");
 		}
 
 		this.running = !this.running;

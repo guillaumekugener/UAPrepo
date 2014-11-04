@@ -18,6 +18,8 @@ var Vector = require('famous/math/Vector');
 SimulationView = function () {
     View.apply(this, arguments);
 
+    this.running = false;
+
     _CreateTheSimulation.call(this);
 }
 
@@ -72,12 +74,13 @@ function _CreateTheSimulation() {
 	var movingSpringModifier = new Modifier({
 	    align: [wallWidth/windowWidth, 0.5],
 	    origin: [0, 0.5],
-	    transform: Transform.translate(wallWidth, window.innerHeight/2, -1)
+	    transform: Transform.translate(wallWidth, 0, -1)
 	});
 
 	var massModifier = new Modifier({
 	    align: [(wallWidth+springRestLength)/windowWidth, 0.5],
-	    origin: [0, 0.5]
+	    origin: [0, 0.5],
+	    transform: Transform.skewY(30)
 	});
 
 	this.add(leftMajorWallModifier).add(leftMajorWallSurface);
@@ -101,16 +104,15 @@ function _CreateTheSimulation() {
 	//The force is now attached to the spring
 	physicsEngine.attach(springView.springForce, [massSurface.particle]);
 
-	massSurface.on('click', function() {
-	    massSurface.particle.setVelocity([-0.2, 0, 0]);
-	}.bind(this));
-
 	this.massPositionOverTime = [];
 
 	// Required to get the surface to move. Also, push the mass' poisiton into an array for graphing later
 	Engine.on('prerender', function() {
 	    massModifier.setTransform(massSurface.particle.getTransform());
-	    this.massPositionOverTime.push(massSurface.particle.getPosition()[0]);
+	    if (this.running) {
+	    	this.massPositionOverTime.push(massSurface.particle.getPosition()[0]);
+	    }
+
 	}.bind(this));
 
 	/*
@@ -144,6 +146,14 @@ SimulationView.prototype.getMassPositionOverTime = function() {
 
 SimulationView.prototype.resetPositionArray = function() {
 	this.massPositionOverTime = [];
+}
+
+SimulationView.prototype.run = function() {
+	this.running = true;
+}
+
+SimulationView.prototype.stopRunning = function() {
+	this.running = false;
 }
 
 
